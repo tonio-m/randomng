@@ -12,5 +12,7 @@ fi
 if [ "$(netstat -tulpn | grep LISTEN | grep 127.0.0.1:8000)" ]; then
     :
 else
-    uvicorn src.main:app --reload
+    uvicorn src.main:app --reload &
 fi
+
+./venv/bin/python src/test/test.py
