@@ -6,5 +6,5 @@ A backend for giveaway/raffle rooms using an eth smart contract
 
 backend with a user/room system, and a drafting system that chooses the winner based on the room's rules.
 
-rngs will be provided by random.org
+RNGs will be provided by random.org
 

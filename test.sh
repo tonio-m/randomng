@@ -15,4 +15,4 @@ else
     uvicorn src.main:app --reload &
 fi
 
-./venv/bin/python src/test/test.py
+./venv/bin/python test/test.py

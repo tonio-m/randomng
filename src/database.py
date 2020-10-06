@@ -32,47 +32,48 @@ class Document(abc.ABC):
 
 
 class User(Document):
-    def __init__(self, name : str =None, _id : ObjectId =None) -> Document:
+    def __init__(self, name : str =None, _id : str =None) -> Document:
         if _id:
             self._id = _id
         else:
             assert name
             result = users.insert_one( { "name": name } )
-            self._id = result.inserted_id
+            self._id = str(result.inserted_id)
 
     @property
     def _object(self) -> dict:
-        return users.find_one({"_id": self._id})
+        return users.find_one({"_id": ObjectId(self._id)})
 
     @staticmethod
-    def find(_id: ObjectId) -> dict:
+    def find(_id: str) -> dict:
         room = Room(_id=_id)
         if room._object is None:
             raise Exception(f"couldn't find object with id {_id}")
         return room
 
     def delete(self) -> ObjectId:
-        users.delete_one({"_id": self._id })
+        users.delete_one({"_id": ObjectId(self._id) })
 
 
 class Room(Document):
-    def __init__(self, owner: User =None, _id: ObjectId =None) -> Document:
+    def __init__(self, owner: User =None, _id: str =None) -> Document:
         if _id:
             self._id = _id
         else:
             assert owner
             result = rooms.insert_one(
                 {
-                    "owner": owner._id, 
+                    "owner": ObjectId(owner._id), 
                     "users": [],
                     "user_objects": {}
                 }
             )
-            self._id = result.inserted_id
+            self._id = str(result.inserted_id)
+            self.add_user(owner)
 
     @property
     def _object(self) -> dict:
-        return rooms.find_one({"_id": self._id})
+        return rooms.find_one({"_id": ObjectId(self._id)})
 
     @staticmethod
     def find(_id: ObjectId) -> Document:
@@ -82,34 +83,38 @@ class Room(Document):
         return room
 
     def add_user(self,user: User) -> None:
+        if user._id in self._object["users"]:
+            return
         rooms.update_one(
-            { "_id": self._id },
+            { "_id": ObjectId(self._id) },
             { "$push": { "users": user._id }, 
               "$set": { f"user_objects.{user._id}": user._object } })
 
     def remove_user(self,user: User) -> None:
         rooms.update_one(
-            { "_id": self._id },
+            { "_id": ObjectId(self._id) },
             { "$pull": { "users": user._id }, 
               "$unset": { f"user_objects.{user._id}": user._object } })
 
     def draft(self) -> ObjectId :
         winner = choice(self._object["users"])
         rooms.update_one(
-            { "_id": self._id },
+            { "_id": ObjectId(self._id) },
             { "$set": { f"winner": winner } })
         return winner
 
     def delete(self) -> ObjectId:
-        rooms.delete_one({"_id": self._id })
+        rooms.delete_one({"_id": ObjectId(self._id) })
 
 
 class Searcher:
     @staticmethod
-    def room():
+    def room(query):
+        #TODO: implement
         pass
 
     @staticmethod
-    def user():
+    def user(query):
+        #TODO: implement
         pass
 
