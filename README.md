@@ -1,10 +1,10 @@
 # Randomng
 
-A backend for giveaway/raffle rooms using an eth smart contract
+A backend for giveaway/raffle rooms using eth smart contracts
 
 ## Purpose
 
-backend with a user/room system, and a drafting system that chooses the winner based on the room's rules.
+backend with a user/room system, and a drafting system that chooses the winner based on the contract.
 
-RNGs will be provided by random.org
+RNGs provided by random.org
 
