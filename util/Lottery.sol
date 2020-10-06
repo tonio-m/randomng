@@ -1,5 +1,6 @@
 
-ttery Contract
+/*
+Lottery Contract
 */
 pragma solidity ^0.4.19;
 import "github.com/oraclize/ethereum-api/oraclizeAPI.sol";
@@ -42,7 +43,6 @@ contract Lottery is usingOraclize {
         _;
     }
 
-	//source: https://ethereum.stackexchange.com/questions/30912/how-to-compare-strings-in-solidity
     function compareStrings (string a, string b) view returns (bool){
        return keccak256(a) == keccak256(b);
 	}
